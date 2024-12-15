@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zion</title>
+    <style>
+        body {
+            font-family: 'Teutonic NR 1', Arial, sans-serif;
+            background: url('Zion_Earth.webp') no-repeat center center fixed;
+            background-size: cover;
+            color: rgba(0, 0, 0, 0.7);
+            text-align: center;
+            padding: 50px;
+            overflow: hidden;
+            animation: moveBackground 51.3s linear infinite, fadeIn 2s ease-in;
+        }
+
+        h1 {
+            font-size: 2.7em;
+            margin-bottom: 20px;
+            color: rgba(0, 0, 0, 0.7);
+            font-family: 'Allasy Caps', sans-serif;
+        }
+
+        @keyframes moveBackground {
+            0% { background-position: 0 0; }
+            50% { background-position: 50% 50%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        #countdown {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            font-size: 2.88em;
+            font-family: 'Desdemona', sans-serif;
+            position: absolute;
+            top: 65%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #000000;
+        }
+
+        .time {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            padding: 20px;
+            width: 172.8px;
+            height: 172.8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .time span {
+            display: block;
+            font-size: 0.5em;
+        }
+
+        .sound-button {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: url('cyborg-baby-logo.png') no-repeat center center;
+            background-size: cover;
+            border: none;
+            cursor: pointer;
+        }
+
+        .sound-label {
+            position: absolute;
+            bottom: 35px;
+            right: 100px;
+            font-family: 'Desdemona', sans-serif;
+            font-size: 1.2em;
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 223, 0, 0.8);
+        }
+
+        #password-section {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            display: block;
+        }
+
+        #password-message {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: rgba(0, 0, 0, 0.7);
+            opacity: 0;
+            transition: opacity 2s ease-in;
+        }
+
+        #donation-address {
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 120%;
+            font-weight: bold;
+            color: rgba(0, 0, 0, 0.7);
+            opacity: 0;
+            transition: opacity 2s ease-in;
+        }
+    </style>
+    <!-- Include CryptoJS for AES encryption -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+    <h1>The essence of creation; time reveals its hand</h1>
+
+    <!-- Countdown Timer -->
+    <div id="countdown">
+        <div class="time"><span id="days">00</span>Days</div>
+        <div class="time"><span id="hours">00</span>Hours</div>
+        <div class="time"><span id="minutes">00</span>Minutes</div>
+        <div class="time"><span id="seconds">00</span>Seconds</div>
+    </div>
+
+    <!-- Audio -->
+    <audio id="background-audio" loop autoplay>
+        <source src="childhood.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <div class="sound-label">Sound</div>
+    <button class="sound-button" onclick="toggleSound()"></button>
+
+    <!-- Password Section -->
+    <div id="password-section">
+        <input type="password" id="password-input" placeholder="Enter City"
+            style="padding: 10px; font-size: 16px; border-radius: 5px; background: transparent; color: black; font-weight: bold; text-align: center; box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);">
+        <button onclick="checkPassword()" 
+            style="padding: 10px 20px; font-size: 16px; background-color: rgba(0, 0, 0, 0.5); color: white; border: none; border-radius: 5px; cursor: pointer;">Enter</button>
+    </div>
+
+    <!-- Password Message -->
+    <p id="password-message"></p>
+
+    <!-- Donation Address -->
+    <p id="donation-address">'Donations' address: Dhuy8ZB9K8HoECc5X4iVTQFzqGoEEKsLaisJaAeXy9QH</p>
+
+    <!-- X Logo -->
+    <a href="https://x.com/ZionSolana" target="_blank" 
+       style="position: absolute; bottom: 20px; left: 20px;">
+       <img src="X_logo.jpg" alt="X Logo" style="width: 60px; height: 60px; display: block;">
+    </a>
+
+    <script>
+        // Countdown timer
+        const launchDate = new Date('2024-12-21T16:00:00+02:00').getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const timeLeft = launchDate - now;
+
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+            document.getElementById("days").textContent = days;
+            document.getElementById("hours").textContent = hours;
+            document.getElementById("minutes").textContent = minutes;
+            document.getElementById("seconds").textContent = seconds;
+
+            if (timeLeft < 0) {
+                clearInterval(countdownInterval);
+                document.getElementById("countdown").textContent = "Time's up!";
+            }
+        }
+
+        const countdownInterval = setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // Encrypted password and binary message
+        const encryptedPassword = "U2FsdGVkX19dmTKBqhqlvRitZTb3Er10ZDi4lxQHUZI=";
+        const binaryMessage = "01000011 01000001 00100000 01110111 01101001 01101100 01101100 00100000 01100010 01100101 00100000 01110010 01100101 01110110 01100101 01100001 01101100 01100101 01100100 00100000 00110001 00110000 00100000 01001101 01101001 01101110 01110101 01110100 01100101 01110011 00100000 01100010 01100101 01100110 01101111 01110010 01100101 00100000 01100011 01101111 01110101 01101110 01110100 01100100 01101111 01110111 01101110 00100000 01100101 01101110 01100100 01110011 00101100 00100000 00100111 01000100 01101111 01101110 01100001 01110100 01101001 01101111 01101110 01110011 00100111 00100000 01110111 01101001 01101100 01101100 00100000 01100010 01100101 00100000 01110010 01100101 01110111 01100001 01110010 01100100 01100101 01100100 00100000 01110111 01101001 01110100 01101000 00100000 01100111 01110010 01100001 01110100 01101001 01110100 01110101 01100100 01100101";
+
+        // Decrypt function
+        function decryptMessage(cipherText, key) {
+            return CryptoJS.AES.decrypt(cipherText, key).toString(CryptoJS.enc.Utf8);
+        }
+
+        function toggleSound() {
+            const audio = document.getElementById('background-audio');
+            const button = document.querySelector('.sound-button');
+            if (audio.paused) {
+                audio.play();
+                button.style.backgroundImage = "url('cyborg-baby-logo.png')";
+            } else {
+                audio.pause();
+                button.style.backgroundImage = "url('cyborg-baby-logo-muted.png')";
+            }
+        }
+
+        function checkPassword() {
+            const input = document.getElementById("password-input").value;
+            const correctPassword = decryptMessage(encryptedPassword, "encryption-key");
+
+            if (input === correctPassword) {
+                document.getElementById("password-message").textContent = binaryMessage;
+                document.getElementById("password-message").style.opacity = "1";
+                document.getElementById("password-message").style.display = "block";
+                document.getElementById("donation-address").style.opacity = "1";
+                document.getElementById("password-section").style.display = "none";
+            } else {
+                document.getElementById("password-input").value = "";
+                document.getElementById("password-input").placeholder = "Wrong Entry";
+            }
+        }
+    </script>
+</body>
+</html>
